@@ -8,7 +8,7 @@ xsi:schemaLocation="
    http://www.springframework.org/schema/mvc
    http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
    http://www.springframework.org/schema/tx 
-		 http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
+   http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
 
 
 	<tx:annotation-driven transaction-manager="transactionManager"/>	
@@ -20,17 +20,20 @@ xsi:schemaLocation="
 		<property name="password" value="465651"/>
 	</bean>
 	
-	<bean id="placeDAO" class="DAO.PlaceDAO">
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-	<bean id="userDAO" class="DAO.UserDAO">
+	<bean id="placeDAO" class="com.tourOfAll.DAO.PlaceDAO">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-	<bean id="evaluationDAO" class="DAO.EvaluationDAO">
+	<bean id="userDAO" class="com.tourOfAll.DAO.UserDAO">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="evaluationDAO" class="com.tourOfAll.DAO.EvaluationDAO">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
 </beans>
-		

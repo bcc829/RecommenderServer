@@ -24,7 +24,7 @@ public class HomeController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public String home(@PathVariable int id) throws IOException, TasteException{
 		MahoutRecommender recommenderItem = new MahoutRecommender(id);
-		return recommenderItem.getRecommendations();
+		return recommenderItem.getRecommendationsToJson();
 		
 	}
 }

@@ -5,13 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.mahout.cf.taste.common.TasteException;
-
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
-import com.tourOfAll.DAO.EvaluationDAO;
-import com.tourOfAll.DAO.PlaceDAO;
-
-
 import org.apache.mahout.cf.taste.impl.eval.LoadEvaluator;
+import org.apache.mahout.cf.taste.impl.model.jdbc.ConnectionPoolDataSource;
 import org.apache.mahout.cf.taste.impl.model.jdbc.MySQLJDBCDataModel;
 import org.apache.mahout.cf.taste.impl.model.jdbc.ReloadFromJDBCDataModel;
 import org.apache.mahout.cf.taste.impl.neighborhood.CachingUserNeighborhood;
@@ -25,8 +20,9 @@ import org.apache.mahout.cf.taste.recommender.IDRescorer;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
+
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.tourOfAll.DAO.PlaceDAO;
 
 
 
@@ -35,17 +31,17 @@ public class MahoutRecommender {
 
 	public MahoutRecommender(int id) throws IOException, TasteException {
 		//DB¿¬µ¿ 
-		ApplicationContext ctx = new GenericXmlApplicationContext("classpath:Spring-configure.xml");
-		EvaluationDAO evaluationDAO  = ctx.getBean("evaluationDAO",EvaluationDAO.class);
-		MysqlDataSource datasource = (MysqlDataSource) evaluationDAO.getDataSource();
+
+		MysqlDataSource datasource = new MysqlDataSource();		
+		datasource.setServerName("localhost");
+		datasource.setUser("root");
+		datasource.setPassword("465651");
+		datasource.setDatabaseName("tourOfAll2");
 		
-//		datasource.setServerName("localhost");
-//		datasource.setUser("root");
-//		datasource.setPassword("465651");
-//		datasource.setDatabaseName("tourOfAll2");
+		ConnectionPoolDataSource connectionPoolDataSource = new ConnectionPoolDataSource(datasource);
 		
 		
-		DataModel model = new ReloadFromJDBCDataModel(new MySQLJDBCDataModel(datasource, "evaluations", "user_id", "item_id", "score", null));
+		DataModel model = new ReloadFromJDBCDataModel(new MySQLJDBCDataModel(connectionPoolDataSource, "evaluations", "user_id", "item_id", "score", null));
 	
 		UserSimilarity similarity = new CachingUserSimilarity(new EuclideanDistanceSimilarity(model),model);
 
@@ -65,7 +61,7 @@ public class MahoutRecommender {
 		
 	}
 
-	public String getRecommendations(){	
+	public String getRecommendationsToJson(){	
 		String json = "{" + "\"Items\"" + ":" + "[";
 		Iterator<RecommendedItem> itr = recommendations.iterator();
 		while (itr.hasNext()) {
@@ -94,4 +90,5 @@ public class MahoutRecommender {
 		
 		return json;
 	}
+
 }
