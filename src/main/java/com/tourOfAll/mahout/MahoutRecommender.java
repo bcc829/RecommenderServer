@@ -20,6 +20,8 @@ import org.apache.mahout.cf.taste.recommender.IDRescorer;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.tourOfAll.DAO.PlaceDAO;
@@ -27,8 +29,9 @@ import com.tourOfAll.DAO.PlaceDAO;
 
 
 public class MahoutRecommender {
-	List<RecommendedItem> recommendations;
-
+	private List<RecommendedItem> recommendations;
+	private static AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:Spring-configure.xml");
+	private static PlaceDAO place = ctx.getBean("placeDAO",PlaceDAO.class);
 	public MahoutRecommender(int id) throws IOException, TasteException {
 		//DB¿¬µ¿ 
 
@@ -66,7 +69,6 @@ public class MahoutRecommender {
 		Iterator<RecommendedItem> itr = recommendations.iterator();
 		while (itr.hasNext()) {
 			RecommendedItem item = itr.next();
-			PlaceDAO place = new PlaceDAO();
 			String str = item.toString();
 			String ItemId = str.substring(str.indexOf(":") + 1, str.indexOf(","));
 			String value = str.substring(str.indexOf("value:") + 6, str.indexOf("value:") + 9);

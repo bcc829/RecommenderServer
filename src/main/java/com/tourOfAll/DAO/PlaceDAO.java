@@ -1,14 +1,17 @@
 package com.tourOfAll.DAO;
 
+
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+
 public class PlaceDAO {
 	private JdbcTemplate jdbcTemplate;
 	
-	public void setDataSource(DataSource datasource){
-		this.jdbcTemplate = new JdbcTemplate(datasource);
+
+	public PlaceDAO(DataSource dataSource){
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
 	public String selectByIdToGetAttribute(int id){

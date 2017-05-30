@@ -3,16 +3,20 @@ package com.tourOfAll.mahout;
 import java.util.ArrayList;
 
 import org.apache.mahout.cf.taste.recommender.IDRescorer;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 import com.tourOfAll.DAO.PlaceDAO;
 import com.tourOfAll.DAO.UserDAO;
 
 public class AttributeRescorer implements IDRescorer {
-	int UserId;
+	private int UserId;
+	private static AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:Spring-configure.xml");
+	private static UserDAO user = ctx.getBean("userDAO",UserDAO.class);
+	private static PlaceDAO place = ctx.getBean("placeDAO",PlaceDAO.class);
 	ArrayList<String> userAttribute = new ArrayList<String>();
 	public AttributeRescorer(int id) {
 		this.UserId = id;
-		UserDAO user = new UserDAO();
 		this.userAttribute = user.selectByUserIdToGetItem_category_code(this.UserId);
 	}
 	@Override
@@ -23,7 +27,7 @@ public class AttributeRescorer implements IDRescorer {
 
 	@Override
 	public double rescore(long ItemId, double originalScore) {
-		PlaceDAO place = new PlaceDAO();
+
 		String attribute = place.selectByIdToGetAttribute((int)ItemId);
 		
 		
