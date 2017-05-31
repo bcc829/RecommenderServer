@@ -1,7 +1,7 @@
 package com.tourOfAll.recommender;
 
 import java.io.IOException;
-
+import java.sql.SQLException;
 
 import org.apache.mahout.cf.taste.common.TasteException;
 
@@ -18,7 +18,7 @@ public class HomeController {
 	
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	public String home(@PathVariable int id) throws IOException, TasteException{
+	public String home(@PathVariable int id) throws IOException, TasteException, SQLException{
 		MahoutRecommender recommenderItem = new MahoutRecommender(id);
 		return recommenderItem.getRecommendationsToJson();
 		

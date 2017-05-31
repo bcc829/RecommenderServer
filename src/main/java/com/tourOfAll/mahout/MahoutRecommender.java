@@ -32,14 +32,16 @@ public class MahoutRecommender {
 	private List<RecommendedItem> recommendations;
 	private static AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:Spring-configure.xml");
 	private static PlaceDAO place = ctx.getBean("placeDAO",PlaceDAO.class);
+	
+	
 	public MahoutRecommender(int id) throws IOException, TasteException {
 		//DB¿¬µ¿ 
 
-		MysqlDataSource datasource = new MysqlDataSource();		
-		datasource.setServerName("localhost");
-		datasource.setUser("root");
-		datasource.setPassword("465651");
-		datasource.setDatabaseName("tourOfAll2");
+		MysqlDataSource datasource = ctx.getBean("dataSource",MysqlDataSource.class);	
+//		datasource.setServerName("localhost");
+//		datasource.setUser("root");
+//		datasource.setPassword("465651");
+//		datasource.setDatabaseName("tourOfAll2");
 		
 		ConnectionPoolDataSource connectionPoolDataSource = new ConnectionPoolDataSource(datasource);
 		

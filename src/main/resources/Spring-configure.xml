@@ -11,14 +11,20 @@ xsi:schemaLocation="
    http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
 
 
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+<bean id="dataSource" class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" >
+		<property name="url" value="jdbc:mysql://localhost:3306/tourofall2?useSSL=false"/>
+		<property name="user" value="root"/>
+		<property name="password" value="465651"/>
+	</bean>
+			
+<!-- 
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://localhost:3306/tourofall2?useSSL=false"/>
 		<property name="username" value="root"/>
 		<property name="password" value="465651"/>
-	</bean>
-			
-
+	</bean> 
+	->기존 DataSource  -->
 	
 	<bean id="placeDAO" class="com.tourOfAll.DAO.PlaceDAO">
 	<constructor-arg ref="dataSource"/>
