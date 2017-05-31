@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.eval.LoadEvaluator;
 import org.apache.mahout.cf.taste.impl.model.jdbc.ConnectionPoolDataSource;
@@ -36,12 +38,12 @@ public class MahoutRecommender {
 	
 	public MahoutRecommender(int id) throws IOException, TasteException {
 		//DB¿¬µ¿ 
-
-		MysqlDataSource datasource = ctx.getBean("dataSource",MysqlDataSource.class);	
-//		datasource.setServerName("localhost");
-//		datasource.setUser("root");
-//		datasource.setPassword("465651");
-//		datasource.setDatabaseName("tourOfAll2");
+		
+		MysqlDataSource datasource = new MysqlDataSource();
+		datasource.setServerName("localhost");
+		datasource.setUser("root");
+		datasource.setPassword("465651");
+		datasource.setDatabaseName("tourOfAll2");
 		
 		ConnectionPoolDataSource connectionPoolDataSource = new ConnectionPoolDataSource(datasource);
 		

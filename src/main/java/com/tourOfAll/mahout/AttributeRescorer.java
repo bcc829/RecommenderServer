@@ -11,9 +11,9 @@ import com.tourOfAll.DAO.UserDAO;
 
 public class AttributeRescorer implements IDRescorer {
 	private int UserId;
-	private static AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:Spring-configure.xml");
-	private static UserDAO user = ctx.getBean("userDAO",UserDAO.class);
-	private static PlaceDAO place = ctx.getBean("placeDAO",PlaceDAO.class);
+	private AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:Spring-configure.xml");
+	private UserDAO user = ctx.getBean("userDAO",UserDAO.class);
+	private PlaceDAO place = ctx.getBean("placeDAO",PlaceDAO.class);
 	ArrayList<String> userAttribute = new ArrayList<String>();
 	public AttributeRescorer(int id) {
 		this.UserId = id;
