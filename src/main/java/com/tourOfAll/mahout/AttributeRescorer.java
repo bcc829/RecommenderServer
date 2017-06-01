@@ -43,10 +43,10 @@ public class AttributeRescorer implements IDRescorer {
 
 		String attribute = place.selectByIdToGetAttribute((int) ItemId);
 
-		if (attribute.equals(ar.get(1)) || attribute.equals(ar.get(2)) || attribute.equals(ar.get(3))
-				|| attribute.equals(ar.get(4)) || attribute.equals(ar.get(5)) || attribute.equals(ar.get(6))
-				|| attribute.equals(ar.get(7)) || attribute.equals(ar.get(8)) || attribute.equals(ar.get(9))
-				|| attribute.equals(ar.get(10))) {
+		if (attribute.equals(ar.get(0)) || attribute.equals(ar.get(1)) || attribute.equals(ar.get(2))
+				|| attribute.equals(ar.get(3)) || attribute.equals(ar.get(4)) || attribute.equals(ar.get(5))
+				|| attribute.equals(ar.get(6)) || attribute.equals(ar.get(7)) || attribute.equals(ar.get(8))
+				|| attribute.equals(ar.get(9))) {
 
 			if (userAttribute.size() == 0)
 				return originalScore;
