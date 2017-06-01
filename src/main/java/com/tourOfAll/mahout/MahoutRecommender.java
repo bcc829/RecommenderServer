@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.sql.DataSource;
+
 
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.eval.LoadEvaluator;
@@ -53,8 +53,9 @@ public class MahoutRecommender {
 		UserSimilarity similarity = new CachingUserSimilarity(new EuclideanDistanceSimilarity(model),model);
 
 
-		//유저 이웃 계산 결과를 캐쉬로 저장
-		UserNeighborhood neighborhood = new CachingUserNeighborhood(new ThresholdUserNeighborhood(0.75, similarity, model),model);
+		//유저 이웃 계산 결과를 캐쉬로 저장 
+		//전시 할 때 추천 여행지가 안 나올경우의 수를 줄이기 위해 임계치값 0.5로 수정
+		UserNeighborhood neighborhood = new CachingUserNeighborhood(new ThresholdUserNeighborhood(0.5, similarity, model),model);
 		
 
 		Recommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
