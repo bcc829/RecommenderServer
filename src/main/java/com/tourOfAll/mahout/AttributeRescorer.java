@@ -29,7 +29,9 @@ public class AttributeRescorer implements IDRescorer {
 	public double rescore(long ItemId, double originalScore) {
 
 		String attribute = place.selectByIdToGetAttribute((int)ItemId);
-		
+		if(attribute == null){
+			return originalScore;
+		}
 		
 		if(userAttribute.size() == 0)
 			return originalScore;
