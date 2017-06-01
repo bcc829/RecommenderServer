@@ -21,8 +21,8 @@ public class EvaluationDAO {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
-	public ArrayList<String> selectByUserIdToGetScore(int user_id){
-		List<String> result = jdbcTemplate.query("select item_category_code from user_preferences where user_id = ?", new RowMapper<String>(){
+	public boolean selectByUserIdToGetScore(int user_id){
+		List<String> result = jdbcTemplate.query("select score from evaluations where user_id = ?", new RowMapper<String>(){
 
 			
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -31,7 +31,10 @@ public class EvaluationDAO {
 			}
 			
 		}, user_id);
-		return (ArrayList<String>) result;
+		if(result.size() == 0)
+			return false;
+		else
+			return true;
 	}
 
 

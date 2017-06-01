@@ -34,7 +34,7 @@ public class MahoutRecommender {
 	private static EvaluationDAO evaluate = ctx.getBean("evaluationDAO", EvaluationDAO.class);
 
 	public MahoutRecommender(int id) throws IOException, TasteException {
-		if (evaluate.selectByUserIdToGetScore(id) == null)
+		if (evaluate.selectByUserIdToGetScore(id) == false)
 			recommendations = null;
 		else {
 			// DB¿¬µ¿
