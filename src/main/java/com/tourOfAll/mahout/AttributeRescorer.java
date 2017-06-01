@@ -54,8 +54,8 @@ public class AttributeRescorer implements IDRescorer {
 			for (int i = 0; i < this.userAttribute.size(); i++) {
 				if (attribute.equals(this.userAttribute.get(i))) {
 					// 가중치 1.1배
-					if(originalScore >= 5){
-						return originalScore; 
+					if(originalScore * 1.1 > 5){
+						return 5.0; 
 					}
 					return originalScore * 1.1;
 				}
