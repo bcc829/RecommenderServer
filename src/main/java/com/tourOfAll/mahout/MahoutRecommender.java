@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-
-
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.eval.LoadEvaluator;
 import org.apache.mahout.cf.taste.impl.model.jdbc.ConnectionPoolDataSource;
@@ -26,51 +24,55 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.tourOfAll.DAO.EvaluationDAO;
 import com.tourOfAll.DAO.PlaceDAO;
-
-
 
 public class MahoutRecommender {
 	private List<RecommendedItem> recommendations;
 	private static AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:Spring-configure.xml");
-	private static PlaceDAO place = ctx.getBean("placeDAO",PlaceDAO.class);
-	
-	
+	private static PlaceDAO place = ctx.getBean("placeDAO", PlaceDAO.class);
+	private static EvaluationDAO evaluate = ctx.getBean("evaluationDAO", EvaluationDAO.class);
+
 	public MahoutRecommender(int id) throws IOException, TasteException {
-		//DB연동 
-		
-		MysqlDataSource datasource = new MysqlDataSource();
-		datasource.setServerName("localhost");
-		datasource.setUser("root");
-		datasource.setPassword("465651");
-		datasource.setDatabaseName("tourOfAll2");
-		
-		ConnectionPoolDataSource connectionPoolDataSource = new ConnectionPoolDataSource(datasource);
-		
-		
-		DataModel model = new ReloadFromJDBCDataModel(new MySQLJDBCDataModel(connectionPoolDataSource, "evaluations", "user_id", "item_id", "score", null));
-	
-		UserSimilarity similarity = new CachingUserSimilarity(new EuclideanDistanceSimilarity(model),model);
+		if (evaluate.selectByUserIdToGetScore(id) == null)
+			recommendations = null;
+		else {
+			// DB연동
 
+			MysqlDataSource datasource = new MysqlDataSource();
+			datasource.setServerName("localhost");
+			datasource.setUser("root");
+			datasource.setPassword("465651");
+			datasource.setDatabaseName("tourOfAll2");
 
-		//유저 이웃 계산 결과를 캐쉬로 저장 
-		//전시 할 때 추천 여행지가 안 나올경우의 수를 줄이기 위해 임계치값 0.5로 수정
-		UserNeighborhood neighborhood = new CachingUserNeighborhood(new ThresholdUserNeighborhood(0.5, similarity, model),model);
-		
+			ConnectionPoolDataSource connectionPoolDataSource = new ConnectionPoolDataSource(datasource);
 
-		Recommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
+			DataModel model = new ReloadFromJDBCDataModel(new MySQLJDBCDataModel(connectionPoolDataSource,
+					"evaluations", "user_id", "item_id", "score", null));
 
-		LoadEvaluator.runLoad(recommender);
+			UserSimilarity similarity = new CachingUserSimilarity(new EuclideanDistanceSimilarity(model), model);
 
+			// 유저 이웃 계산 결과를 캐쉬로 저장
+			// 전시 할 때 추천 여행지가 안 나올경우의 수를 줄이기 위해 임계치값 0.5로 수정
+			UserNeighborhood neighborhood = new CachingUserNeighborhood(
+					new ThresholdUserNeighborhood(0.5, similarity, model), model);
 
-		IDRescorer testRescorer = new AttributeRescorer(id);
-		this.recommendations = recommender.recommend(id, 20, testRescorer);
-		
-		
+			Recommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
+
+			LoadEvaluator.runLoad(recommender);
+
+			IDRescorer testRescorer = new AttributeRescorer(id);
+			this.recommendations = recommender.recommend(id, 20, testRescorer);
+		}
+
 	}
 
-	public String getRecommendationsToJson(){	
+	public String getRecommendationsToJson() {
 		String json = "{" + "\"Items\"" + ":" + "[";
+		if(recommendations == null){
+			json = json + "]" + "}";
+			return json;
+		}
 		Iterator<RecommendedItem> itr = recommendations.iterator();
 		while (itr.hasNext()) {
 			RecommendedItem item = itr.next();
@@ -80,21 +82,17 @@ public class MahoutRecommender {
 			String url = place.selectByIdToGetURL(Integer.parseInt(ItemId));
 			String title = place.selectByIdToGetTitle(Integer.parseInt(ItemId));
 			if (itr.hasNext())
-				json = json + "{" + "\"ID\"" + ":" + "\"" + ItemId + "\"" 
-			            + ", " + "\"Value\"" + ":" + "\"" + value + "\""
-			            + ", " + "\"URL\"" + ":" + "\"" + url + "\""
-			            + ", " + "\"Title\"" + ":" + "\"" + title + "\""
-			            + "}" + ", ";
+				json = json + "{" + "\"ID\"" + ":" + "\"" + ItemId + "\"" + ", " + "\"Value\"" + ":" + "\"" + value
+						+ "\"" + ", " + "\"URL\"" + ":" + "\"" + url + "\"" + ", " + "\"Title\"" + ":" + "\"" + title
+						+ "\"" + "}" + ", ";
 			else
-				json = json + "{" + "\"ID\"" + ":" + "\"" + ItemId + "\""
-						+ ", " + "\"Value\"" + ":" + "\"" + value + "\""
-						+ ", " + "\"URL\"" + ":" + "\"" + url + "\""
-						+ ", " + "\"Title\"" + ":" + "\"" + title + "\""
-						+ "}";
+				json = json + "{" + "\"ID\"" + ":" + "\"" + ItemId + "\"" + ", " + "\"Value\"" + ":" + "\"" + value
+						+ "\"" + ", " + "\"URL\"" + ":" + "\"" + url + "\"" + ", " + "\"Title\"" + ":" + "\"" + title
+						+ "\"" + "}";
 		}
 
 		json = json + "]" + "}";
-		
+
 		return json;
 	}
 
